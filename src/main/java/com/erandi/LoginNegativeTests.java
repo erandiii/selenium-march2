@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class LoginNegativeTests {
@@ -94,6 +95,25 @@ public class LoginNegativeTests {
         Assert.assertEquals(errorMessage, "Epic sadface: Username is required");
     }
 
+    @DataProvider(name = "user-credentials")
+    public Object[][] userCredentials() {
+        return new Object[][] {
+                {"", "", "Epic sadface: Username is required"},
+                {"", "password", "Epic sadface: Username is required"},
+                {"standard_user", "","Epic sadface: Password is required"}
+        };
+    }
+
+    @Test(dataProvider = "user-credentials")
+    public void testInvalidLoginScenarioWithDDT(String username, String password, String expectedError) {
+//        driver.findElement(By.id("user-name")).sendKeys();
+//        driver.findElement(By.id("password")).sendKeys();
+//        driver.findElement(By.id("login-button")).sendKeys();
+
+        enterCredentials(username, password);
+        clickLoginButton();
+        Assert.assertEquals(getErrorMessage(), expectedError);
+    }
     /**
      * Test login with a blank password.
      */
